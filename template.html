@@ -1,0 +1,52 @@
+<!doctype html><html lang="en-IN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arto & ApLiQ by Veeha | Shop on Amazon.in</title>
+<meta name="description" content="Home & kitchen essentials from Arto and ApLiQ. Tap to buy on Amazon.in.">
+<meta property="og:title" content="Arto & ApLiQ | Shop on Amazon.in"><meta property="og:type" content="website">
+<style>
+:root{--brand:#7a1f00;--accent:#d9480f;--bg:#fff8f0;--ink:#2b2118;--mut:#7a6a5c;--card:#fff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%}
+header{background:linear-gradient(135deg,#7a1f00,#d9480f);color:#fff;text-align:center;padding:26px 16px 20px}
+.logo{display:inline-block;background:#fff;color:var(--brand);font-weight:800;letter-spacing:2px;border-radius:10px;padding:6px 14px;font-size:22px}
+.logo+.logo{margin-left:6px;color:var(--accent)}header h1{font-size:19px;margin:12px 0 4px}header p{margin:0;opacity:.9;font-size:14px}
+.bar{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 12px 6px;box-shadow:0 2px 6px rgba(0,0,0,.06)}
+#q{width:100%;padding:12px 14px;border:1px solid #e3d3c3;border-radius:12px;font-size:16px;background:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid #e3d3c3;background:#fff;border-radius:20px;padding:7px 13px;font-size:14px;color:var(--ink);cursor:pointer}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+main{max-width:1000px;margin:0 auto;padding:6px 12px 40px}h2{font-size:18px;margin:22px 4px 10px;color:var(--brand)}
+h2 small{color:var(--mut);font-weight:400;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}@media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(60,30,0,.1);display:flex;flex-direction:column;position:relative}
+.ph{aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center}.ph img{width:100%;height:100%;object-fit:contain}
+.ph.none{background:linear-gradient(135deg,#ffe8d6,#fff);color:var(--brand);font-weight:800;font-size:28px;letter-spacing:2px}
+.body{padding:10px 10px 12px;display:flex;flex-direction:column;gap:5px;flex:1}.brand{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase}
+.t{font-size:14px;font-weight:600;line-height:1.3}.l{font-size:12.5px;color:var(--mut);line-height:1.35;flex:1}
+.btn{display:block;text-align:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border-radius:10px;padding:10px;margin-top:6px;font-size:14px}.btn:active{background:var(--brand)}
+.tag{position:absolute;top:8px;left:8px;background:#16a34a;color:#fff;font-size:11px;font-weight:700;border-radius:8px;padding:3px 8px}
+.hs{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}.hs .card{flex:none;width:160px;scroll-snap-align:start}
+#empty{display:none;text-align:center;color:var(--mut);padding:40px 0}footer{text-align:center;color:var(--mut);font-size:12px;padding:20px 16px 40px}
+a:focus-visible,.chip:focus-visible,#q:focus-visible{outline:3px solid #fbbf24}
+</style></head><body>
+<header><span class="logo">ARTO</span><span class="logo">ApLiQ</span><h1>Smart home &amp; kitchen finds</h1><p>Tap any product to buy on Amazon.in</p></header>
+<div class="bar"><input id="q" type="search" placeholder="Search products (e.g. egg, bottle, storage)" aria-label="Search products" autocomplete="off"><div class="chips" id="chips"></div></div>
+<main><section id="newsec"><h2>🆕 New this week <small>as seen on Instagram</small></h2><div class="hs" id="newrow"></div></section>
+<div id="sections"></div><div id="empty">No products match your search.</div></main>
+<footer>Arto &amp; ApLiQ are brands of Veeha Inc. Product links open Amazon.in. Updated <span id="built"></span>.</footer>
+<script>
+const D=/*DATA*/null;const $=s=>document.querySelector(s);
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function card(p,tag){const ph=p.i?`<div class="ph"><img src="${p.i}" alt="${esc(p.t)}" loading="lazy" width="300" height="300"></div>`:`<div class="ph none">${p.b.toUpperCase()}</div>`;
+return `<article class="card">${tag?'<span class="tag">NEW</span>':''}${ph}<div class="body"><span class="brand">${p.b}</span><div class="t">${esc(p.t)}</div><div class="l">${esc(p.l)}</div><a class="btn" rel="noopener" target="_blank" href="https://www.amazon.in/dp/${p.a}">Buy on Amazon</a></div></article>`}
+let cur='All';
+function render(){const q=$('#q').value.trim().toLowerCase();let n=0,h='';
+for(const c of D.cats){if(cur!=='All'&&cur!==c.n)continue;const items=D.products.filter(p=>p.c===c.n&&(!q||(p.t+' '+p.l+' '+p.b+' '+c.n).toLowerCase().includes(q)));if(!items.length)continue;n+=items.length;
+h+=`<h2>${c.e} ${c.n} <small>${items.length}</small></h2><div class="grid">${items.map(p=>card(p,p.new)).join('')}</div>`}
+$('#sections').innerHTML=h;$('#empty').style.display=n?'none':'block';
+$('#newsec').style.display=(!q&&cur==='All'&&D.new.length)?'block':'none'}
+$('#newrow').innerHTML=D.new.map(a=>card(D.products.find(p=>p.a===a),true)).join('');
+const chips=['All',...D.cats.filter(c=>D.products.some(p=>p.c===c.n)).map(c=>c.n)];
+$('#chips').innerHTML=chips.map(c=>`<button class="chip${c==='All'?' on':''}" data-c="${esc(c)}">${c}</button>`).join('');
+$('#chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur=b.dataset.c;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()};
+$('#q').oninput=render;$('#built').textContent=D.built;render();
+</script></body></html>
