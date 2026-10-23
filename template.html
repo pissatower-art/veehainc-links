@@ -36,7 +36,7 @@ a:focus-visible,.chip:focus-visible,#q:focus-visible{outline:3px solid #fbbf24}
 <script>
 const D=/*DATA*/null;const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function card(p,tag){const ph=p.i?`<div class="ph"><img src="${p.i}" alt="${esc(p.t)}" loading="lazy" width="300" height="300"></div>`:`<div class="ph none">${p.b.toUpperCase()}</div>`;
+function card(p,tag){const ph=p.i?`<div class="ph"><img src="${p.i||'images/placeholder.svg'}" onerror="this.onerror=null;this.src='images/placeholder.svg'" alt="${esc(p.t)}" loading="lazy" width="300" height="300"></div>`:`<div class="ph none">${p.b.toUpperCase()}</div>`;
 return `<article class="card">${tag?'<span class="tag">NEW</span>':''}${ph}<div class="body"><span class="brand">${p.b}</span><div class="t">${esc(p.t)}</div><div class="l">${esc(p.l)}</div><a class="btn" rel="noopener" target="_blank" href="https://www.amazon.in/dp/${p.a}">Buy on Amazon</a></div></article>`}
 let cur='All';
 function render(){const q=$('#q').value.trim().toLowerCase();let n=0,h='';
