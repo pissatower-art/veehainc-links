@@ -44,8 +44,18 @@ def benefit(t,c):
         if len(out)==2: break
     return ' · '.join(out) if out else DEFAULT.get(c,'Quality everyday home essentials.')
 posted={}
+latest=None
+latest_date=None
 if os.path.exists(posted_path):
-    for r in csv.DictReader(open(posted_path)): posted[r['asin']]=r['date_posted']
+    for r in csv.DictReader(open(posted_path)):
+        a=(r.get('asin') or '').strip()
+        d=(r.get('date_posted') or '').strip()
+        if not a: continue
+        posted[a]=d
+        # Last row by date; later rows on the same date win (file is chronological).
+        if d and (latest_date is None or d>=latest_date):
+            latest_date=d
+            latest=a
 today=dt.date.today()
 out=[]
 for p in prods:
@@ -57,10 +67,10 @@ for x in out: x['new']=x in new
 order={n:i for i,(n,_,_) in enumerate(CATS)}
 catinfo=[{'n':n,'e':e} for n,e,_ in CATS]+[{'n':'More from Arto & ApLiQ','e':'✨'}]
 out.sort(key=lambda x:(order.get(x['c'],99),-x['n'],x['t']))
-data=json.dumps({'products':out,'cats':catinfo,'new':[x['a'] for x in new],'built':today.isoformat()},ensure_ascii=False,separators=(',',':'))
+data=json.dumps({'products':out,'cats':catinfo,'new':[x['a'] for x in new],'latest':latest,'built':today.isoformat()},ensure_ascii=False,separators=(',',':'))
 tpl=open(os.path.join(here,'template.html'),encoding='utf8').read()
 open(os.path.join(here,'index.html'),'w',encoding='utf8').write(tpl.replace('/*DATA*/null',data))
-print('built',len(out),'products;',len(new),'new this week')
+print('built',len(out),'products;',len(new),'new this week; latest',latest)
 
 # Optional: single-file version with images inlined (for hosts that only take one file)
 if '--inline' in args:

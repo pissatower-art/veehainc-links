@@ -17,7 +17,7 @@ header{background:linear-gradient(135deg,#7a1f00,#d9480f);color:#fff;text-align:
 main{max-width:1000px;margin:0 auto;padding:6px 12px 40px}h2{font-size:18px;margin:22px 4px 10px;color:var(--brand)}
 h2 small{color:var(--mut);font-weight:400;font-size:13px}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr)}}@media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr)}}
-.card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(60,30,0,.1);display:flex;flex-direction:column;position:relative}
+.card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(60,30,0,.1);display:flex;flex-direction:column;position:relative;scroll-margin-top:86px}
 .ph{aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center}.ph img{width:100%;height:100%;object-fit:contain}
 .ph.none{background:linear-gradient(135deg,#ffe8d6,#fff);color:var(--brand);font-weight:800;font-size:28px;letter-spacing:2px}
 .body{padding:10px 10px 12px;display:flex;flex-direction:column;gap:5px;flex:1}.brand{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase}
@@ -25,28 +25,65 @@ h2 small{color:var(--mut);font-weight:400;font-size:13px}
 .btn{display:block;text-align:center;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;border-radius:10px;padding:10px;margin-top:6px;font-size:14px}.btn:active{background:var(--brand)}
 .tag{position:absolute;top:8px;left:8px;background:#16a34a;color:#fff;font-size:11px;font-weight:700;border-radius:8px;padding:3px 8px}
 .hs{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory}.hs .card{flex:none;width:160px;scroll-snap-align:start}
+.featured{max-width:560px;margin:0 auto;border:2px solid #f4c7a8;box-shadow:0 6px 18px rgba(60,30,0,.16)}
+@media(min-width:640px){.featured{display:grid;grid-template-columns:240px 1fr;max-width:100%;align-items:stretch}.featured .ph{aspect-ratio:auto;min-height:240px}.featured .body{padding:18px 20px 20px;justify-content:center}}
+.featured .t{font-size:20px}.featured .l{font-size:14px}
+.btn-lg{padding:16px 18px;font-size:18px;margin-top:12px;letter-spacing:.02em}
+.card.hilite{outline:3px solid var(--accent);box-shadow:0 0 0 6px rgba(217,72,15,.28);animation:pulse 1s ease}
+@keyframes pulse{from{box-shadow:0 0 0 0 rgba(217,72,15,.5)}to{box-shadow:0 0 0 10px rgba(217,72,15,0)}}
 #empty{display:none;text-align:center;color:var(--mut);padding:40px 0}footer{text-align:center;color:var(--mut);font-size:12px;padding:20px 16px 40px}
 a:focus-visible,.chip:focus-visible,#q:focus-visible{outline:3px solid #fbbf24}
 </style></head><body>
 <header><span class="logo">ARTO</span><span class="logo">ApLiQ</span><h1>Smart home &amp; kitchen finds</h1><p>Tap any product to buy on Amazon.in</p></header>
 <div class="bar"><input id="q" type="search" placeholder="Search products (e.g. egg, bottle, storage)" aria-label="Search products" autocomplete="off"><div class="chips" id="chips"></div></div>
-<main><section id="newsec"><h2>🆕 New this week <small>as seen on Instagram</small></h2><div class="hs" id="newrow"></div></section>
-<div id="sections"></div><div id="empty">No products match your search.</div></main>
+<main>
+<section id="latestsec"><h2>📌 Latest Reel <small>as seen on Instagram</small></h2><div id="latestrow"></div></section>
+<section id="newsec"><h2>🆕 New this week <small>as seen on Instagram</small></h2><div class="hs" id="newrow"></div></section>
+<div id="sections"></div><div id="empty">No products match your search.</div>
+</main>
 <footer>Arto &amp; ApLiQ are brands of Veeha Inc. Product links open Amazon.in. Updated <span id="built"></span>.</footer>
 <script>
 const D=/*DATA*/null;const $=s=>document.querySelector(s);
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function card(p,tag){const ph=p.i?`<div class="ph"><img src="${p.i||'images/placeholder.svg'}" onerror="this.onerror=null;this.src='images/placeholder.svg'" alt="${esc(p.t)}" loading="lazy" width="300" height="300"></div>`:`<div class="ph none">${p.b.toUpperCase()}</div>`;
-return `<article class="card">${tag?'<span class="tag">NEW</span>':''}${ph}<div class="body"><span class="brand">${p.b}</span><div class="t">${esc(p.t)}</div><div class="l">${esc(p.l)}</div><a class="btn" rel="noopener" target="_blank" href="https://www.amazon.in/dp/${p.a}">Buy on Amazon</a></div></article>`}
+function card(p,tag,withId,featured){
+  if(!p)return '';
+  const id=withId?` id="${esc(p.a)}"`:'';
+  const ph=p.i?`<div class="ph"><img src="${p.i||'images/placeholder.svg'}" onerror="this.onerror=null;this.src='images/placeholder.svg'" alt="${esc(p.t)}" loading="lazy" width="300" height="300"></div>`:`<div class="ph none">${p.b.toUpperCase()}</div>`;
+  const btn=featured?'btn btn-lg':'btn';
+  return `<article class="card${featured?' featured':''}"${id} data-asin="${esc(p.a)}">${tag?'<span class="tag">NEW</span>':''}${ph}<div class="body"><span class="brand">${p.b}</span><div class="t">${esc(p.t)}</div><div class="l">${esc(p.l)}</div><a class="${btn}" rel="noopener" target="_blank" href="https://www.amazon.in/dp/${p.a}">Buy now</a></div></article>`}
 let cur='All';
+const latest=D.latest&&D.products.find(p=>p.a===D.latest);
+function homeView(){return !$('#q').value.trim()&&cur==='All'}
 function render(){const q=$('#q').value.trim().toLowerCase();let n=0,h='';
 for(const c of D.cats){if(cur!=='All'&&cur!==c.n)continue;const items=D.products.filter(p=>p.c===c.n&&(!q||(p.t+' '+p.l+' '+p.b+' '+c.n).toLowerCase().includes(q)));if(!items.length)continue;n+=items.length;
-h+=`<h2>${c.e} ${c.n} <small>${items.length}</small></h2><div class="grid">${items.map(p=>card(p,p.new)).join('')}</div>`}
+h+=`<h2>${c.e} ${c.n} <small>${items.length}</small></h2><div class="grid">${items.map(p=>card(p,p.new,p.a!==D.latest)).join('')}</div>`}
 $('#sections').innerHTML=h;$('#empty').style.display=n?'none':'block';
-$('#newsec').style.display=(!q&&cur==='All'&&D.new.length)?'block':'none'}
-$('#newrow').innerHTML=D.new.map(a=>card(D.products.find(p=>p.a===a),true)).join('');
+$('#latestsec').style.display=(homeView()&&latest)?'block':'none';
+$('#newsec').style.display=(homeView()&&D.new.length)?'block':'none'}
+$('#latestrow').innerHTML=latest?card(latest,false,true,true):'';
+$('#newrow').innerHTML=D.new.map(a=>card(D.products.find(p=>p.a===a),true,false)).join('');
 const chips=['All',...D.cats.filter(c=>D.products.some(p=>p.c===c.n)).map(c=>c.n)];
 $('#chips').innerHTML=chips.map(c=>`<button class="chip${c==='All'?' on':''}" data-c="${esc(c)}">${c}</button>`).join('');
-$('#chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur=b.dataset.c;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render()};
-$('#q').oninput=render;$('#built').textContent=D.built;render();
+$('#chips').onclick=e=>{const b=e.target.closest('.chip');if(!b)return;cur=b.dataset.c;document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x===b));render();goHash(false)};
+$('#q').oninput=()=>{render();goHash(false)};
+$('#built').textContent=D.built;
+function goHash(reset){
+  let id=(location.hash||'').replace(/^#/,'').trim();
+  if(!id){document.querySelectorAll('.card.hilite').forEach(x=>x.classList.remove('hilite'));return}
+  id=id.toUpperCase();
+  if(reset!==false&&(!homeView()||!document.getElementById(id))){
+    $('#q').value='';cur='All';
+    document.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.c==='All'));
+    render();
+  }
+  requestAnimationFrame(()=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    document.querySelectorAll('.card.hilite').forEach(x=>x.classList.remove('hilite'));
+    el.classList.add('hilite');
+    el.scrollIntoView({behavior:'smooth',block:'center'});
+  });
+}
+window.addEventListener('hashchange',()=>goHash(true));
+render();goHash(true);
 </script></body></html>

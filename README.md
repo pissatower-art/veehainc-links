@@ -4,6 +4,6 @@ Static site: index.html + images/ (data inline, also in products.json). No price
 ## Daily update
 1. Ask Grok Bot to refresh `products.json` from the Amazon catalogue (needs the Amazon MCP) and download new images into `images/`.
 2. Append the day's post to /workspace/instagram_posted.csv (asin,product,date_posted,permalink).
-3. `python3 build.py`  → rewrites index.html ("New this week" = posted in last 7 days; `--days N` to change).
+3. `python3 build.py`  → rewrites index.html ("Latest Reel" = last row by date in instagram_posted.csv; "New this week" = posted in last 7 days; `--days N` to change). Each product has a Buy now button and a `#ASIN` anchor.
    `python3 build.py --inline` → also writes dist/index.html (single file, images inlined, ~1.7 MB).
 4. `./deploy.sh` → pushes to GitHub Pages (needs `gh auth login` once).
